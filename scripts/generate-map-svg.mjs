@@ -11,9 +11,6 @@ const geo = JSON.parse(
 const W = 800;
 const H = 700;
 const pad = 20;
-/** Fondo dark UI (tono de la vista previa del README) */
-const BACKGROUND = "#12151C";
-
 let minLon = Infinity;
 let maxLon = -Infinity;
 let minLat = Infinity;
@@ -72,7 +69,6 @@ const colors = [
 
 let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa de Venezuela por estados">
-  <rect width="100%" height="100%" fill="${BACKGROUND}"/>
 `;
 
 for (let i = 0; i < geo.features.length; i++) {
@@ -80,7 +76,7 @@ for (let i = 0; i < geo.features.length; i++) {
   const fill = colors[i % colors.length];
   const name = (f.properties.ESTADO || "").replace(/"/g, "");
   for (const d of geomToPaths(f.geometry)) {
-    svg += `  <path d="${d}" fill="${fill}" fill-opacity="0.72" stroke="#8ee4b0" stroke-width="0.5" data-estado="${name}"/>\n`;
+    svg += `  <path d="${d}" fill="${fill}" fill-opacity="0.85" stroke="#1a5c3e" stroke-width="0.6" data-estado="${name}"/>\n`;
   }
 }
 

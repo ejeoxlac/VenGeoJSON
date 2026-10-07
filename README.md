@@ -1,9 +1,5 @@
 <p align="center">
-  <svg width="100%" height="42" viewBox="0 0 720 42" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect width="720" height="14" y="0" fill="#FFCC00"/>
-    <rect width="720" height="14" y="14" fill="#00247D"/>
-    <rect width="720" height="14" y="28" fill="#CF142B"/>
-  </svg>
+  <img src="assets/bandera-venezuela.svg" alt="Franja tricolor de Venezuela" width="720" height="42"/>
 </p>
 
 <h1 align="center">VenGeoJSON</h1>
@@ -180,7 +176,7 @@ Usa el archivo correspondiente en `Estados/` (por ejemplo `Estados/13.geojson` p
 | **VenGeoJSON** (este repo) | Copia u organización de capas **GeoJSON** publicadas por el MPV/Geocadena, con enlaces a la fuente original, para facilitar en **Git/GitHub** (u otro hosting) la descarga y el uso en mapas y apps. **No incluye** el código ni los servicios del SIG Geocadena. La carpeta `Estados/` divide el archivo nacional en un GeoJSON por entidad (`01`–`24`). |
 | **MPV / Geocadena / CENDITEL** | El [Observatorio Productivo Venezolano](http://mpv.cenditel.gob.ve/), el SIG **Geocadena**, el código del módulo Cadenas y los productos oficiales de [CENDITEL](https://www.cenditel.gob.ve/). **VenGeoJSON no es eso** y no hay afiliación, respaldo ni mantenimiento por parte de esas instituciones. |
 
-En **VenGeoJSON**, los **datos** de los `.geojson` (geometrías y atributos) vienen de la fuente indicada abajo. Lo **propio de este repo** (README, carpeta `Estados/`, `scripts/`, `assets/`, etc.) es empaquetado y documentación del mantenedor del repositorio, no del MPV.
+En **VenGeoJSON**, los **datos** de los `.geojson` (geometrías y atributos) vienen de la fuente indicada abajo. Lo **propio de este repo** (README, carpeta `Estados/`, `scripts/`, `assets/`, etc.) es empaquetado y documentación de [**Ejeoxlac**](https://github.com/Ejeoxlac), mantenedor del repositorio, no del MPV.
 
 ### Origen de las capas
 
@@ -209,6 +205,7 @@ Este repositorio es un **empaquetado de conveniencia** por terceros; no sustituy
 VenGeoJSON/
 ├── README.md
 ├── assets/
+│   ├── bandera-venezuela.svg
 │   └── mapa-venezuela-estados.svg
 ├── scripts/
 │   └── generate-map-svg.mjs
@@ -227,4 +224,4 @@ Las mejoras bienvenidas incluyen: simplificación de geometrías para web, corre
 
 ## Mantenimiento
 
-**VenGeoJSON** es un proyecto personal de **Bill Anthony Niño Riera**: empaqueta y documenta capas GeoJSON de la fuente MPV/Geocadena para facilitar su distribución. **No** representa a CENDITEL ni al Observatorio Productivo Venezolano.
+**VenGeoJSON** es un proyecto personal de [**Ejeoxlac**](https://github.com/ejeoxlac) (Bill Anthony Niño Riera): empaqueta y documenta capas GeoJSON de la fuente MPV/Geocadena para facilitar su distribución. **No** representa a CENDITEL ni al Observatorio Productivo Venezolano.
