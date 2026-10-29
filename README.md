@@ -14,10 +14,42 @@
 </p>
 
 <p align="center">
-  <strong>VenGeoJSON</strong> no es el SIG Geocadena ni forma parte del MPV/CENDITEL: es un repositorio <em>independiente</em> que republica y organiza capas GeoJSON tomadas de su fuente pública para facilitar el acceso (p. ej. Git, CDN, mapas web). Más detalle en <a href="#fuente-y-atribución">Fuente y atribución</a> y en <a href="#mantenimiento">Mantenimiento</a>.
+  <strong>VenGeoJSON</strong> no es el SIG Geocadena ni forma parte del MPV/CENDITEL: es un repositorio <em>independiente</em> que republica y organiza capas GeoJSON tomadas de su fuente pública para facilitar el acceso (p. ej. Git, CDN, mapas web). Más detalle en <a href="#fuente-y-atribucion">Fuente y atribución</a> y en <a href="#mantenimiento">Mantenimiento</a>.
 </p>
 
-## Ejemplo en vista
+## Índice
+
+- [Ejemplo en vista](#ejemplo-en-vista)
+  - [Estados](#ejemplo-estados)
+  - [Municipios](#ejemplo-municipios)
+- [Contenido](#contenido)
+  - [Tamaño aproximado](#tamano-aproximado)
+- [Sistema de coordenadas](#sistema-de-coordenadas)
+- [Esquema de datos](#esquema-de-datos)
+  - [Estados](#estados)
+  - [Códigos en `Estados/`](#codigos-estados)
+  - [Estado `24` (La Guaira / Vargas)](#estado-24)
+  - [Municipios](#municipios)
+  - [Ciudades](#ciudades)
+  - [Carreteras](#carreteras)
+- [Uso rápido](#uso-rapido)
+  - [Cargar en el navegador (fetch)](#cargar-en-el-navegador-fetch)
+  - [Leaflet](#leaflet)
+  - [Mapbox GL JS / MapLibre GL](#mapbox-gl-js-maplibre-gl)
+  - [QGIS / GDAL](#qgis-gdal)
+  - [Filtrar un solo estado](#filtrar-un-solo-estado)
+- [Fuente y atribución](#fuente-y-atribucion)
+  - [Qué es (y qué no es) este repositorio](#que-es-este-repo)
+  - [Origen de las capas](#origen-capas)
+  - [Licencia de los datos](#licencia-datos)
+- [Notas](#notas)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Contribuciones](#contribuciones)
+- [Mantenimiento](#mantenimiento)
+
+## Ejemplo en vista {#ejemplo-en-vista}
+
+### Estados {#ejemplo-estados}
 
 Vista previa de la capa [`venezuela.geojson`](venezuela.geojson) (entidades federales y zona en reclamación):
 
@@ -27,20 +59,34 @@ Vista previa de la capa [`venezuela.geojson`](venezuela.geojson) (entidades fede
 
 <p align="center"><sub>Polígonos generados a partir de <code>venezuela.geojson</code> · WGS 84 · regenerar con <code>node scripts/generate-map-svg.mjs</code></sub></p>
 
+### Municipios {#ejemplo-municipios}
+
+Vista previa de las capas [`Municipios/01.geojson`](Municipios/01.geojson) … [`24.geojson`](Municipios/24.geojson) (**335** municipios; no incluye la zona en reclamación):
+
+<p align="center">
+  <img src="assets/mapa-venezuela-municipios.svg" alt="Mapa de Venezuela con división por municipios" width="720"/>
+</p>
+
+<p align="center"><sub>Polígonos generados a partir de <code>Municipios/*.geojson</code> · WGS 84 · regenerar con <code>node scripts/generate-map-svg.mjs</code></sub></p>
+
 ## Contenido
 
 | Archivo / carpeta | Descripción | Entidades |
 |-------------------|-------------|-----------|
-| [`venezuela.geojson`](venezuela.geojson) | División político-territorial nacional (estados, Distrito Capital y zona en reclamación) | 25 |
+| [`venezuela.geojson`](venezuela.geojson) | División político-territorial nacional (estados, Distrito Capital y zona en reclamación). Estado `24` como **La Guaira** | 25 |
+| [`MapasNacionalesAntiguos/venezuela.geojson`](MapasNacionalesAntiguos/venezuela.geojson) | Misma capa nacional con el estado `24` como **Vargas** | 25 |
 | [`Estados/`](Estados/) | Un archivo por entidad federal (`01.geojson` … `24.geojson`) | 24 |
+| [`Municipios/`](Municipios/) | Municipios de cada entidad federal (`01.geojson` … `24.geojson`) | 335 |
 | [`ciudades.geojson`](ciudades.geojson) | Polígonos de localidades / áreas urbanas | 434 |
 | [`carreterasDeVenezuela.geojson`](carreterasDeVenezuela.geojson) | Red vial (segmentos `LineString`) | 17 975 |
 
-### Tamaño aproximado
+### Tamaño aproximado {#tamano-aproximado}
 
 | Archivo | Tamaño |
 |---------|--------|
 | `venezuela.geojson` | ~6,3 MB |
+| `MapasNacionalesAntiguos/venezuela.geojson` | ~6,3 MB |
+| `Municipios/` | ~13,8 MB |
 | `ciudades.geojson` | ~1,1 MB |
 | `carreterasDeVenezuela.geojson` | ~12,9 MB |
 
@@ -52,7 +98,7 @@ Todas las geometrías usan **WGS 84**: coordenadas en grados decimales **`[longi
 
 ## Esquema de datos
 
-### Estados (`venezuela.geojson` y `Estados/NN.geojson`)
+### Estados (`venezuela.geojson` y `Estados/NN.geojson`) {#estados}
 
 Cada feature representa una entidad federal.
 
@@ -63,9 +109,9 @@ Cada feature representa una entidad federal.
 
 Geometrías: `Polygon` o `MultiPolygon` (por ejemplo Carabobo, Nueva Esparta, Zulia).
 
-En `venezuela.geojson` aparece además la feature **`ZONA EN RECLAMACION`** (`COD_ESTADO`: `00`), correspondiente al área en disputa con Guyana (Esequibo). Esa entidad **no** tiene archivo propio en `Estados/`.
+En `venezuela.geojson` aparece además la feature **`ZONA EN RECLAMACION`** (`COD_ESTADO`: `00`), correspondiente al área en disputa con Guyana (Esequibo). Esa entidad **no** tiene archivo propio en `Estados/` ni en `Municipios/`.
 
-#### Códigos en `Estados/`
+#### Códigos en `Estados/` {#codigos-estados}
 
 | Archivo | `COD_ESTADO` | Estado |
 |---------|--------------|--------|
@@ -92,9 +138,40 @@ En `venezuela.geojson` aparece además la feature **`ZONA EN RECLAMACION`** (`CO
 | `21.geojson` | 21 | Trujillo |
 | `22.geojson` | 22 | Yaracuy |
 | `23.geojson` | 23 | Zulia |
-| `24.geojson` | 24 | Vargas |
+| `24.geojson` | 24 | La Guaira |
 
-### Ciudades (`ciudades.geojson`)
+#### Estado `24`: nombre anterior y actual {#estado-24}
+
+El código **`24`** no cambia. Las capas actuales usan **La Guaira**; las carpetas **`*Antiguos`** conservan **Vargas**:
+
+| Ubicación | `ESTADO` | Notas |
+|-----------|----------|--------|
+| `venezuela.geojson`, `Estados/24.geojson` | **LA GUAIRA** | Uso por defecto |
+| `MapasNacionalesAntiguos/venezuela.geojson`, `Estados/EstadosAntiguos/24.geojson` | **VARGAS** | Misma geometría |
+
+Regenerar con `node scripts/sync-estado-24.mjs`. Las rutas están centralizadas en `scripts/legacy-dir.mjs`.
+
+### Municipios (`Municipios/NN.geojson`) {#municipios}
+
+Cada archivo reúne los municipios de una entidad federal. El nombre del archivo es el `COD_ESTADO` (`01`–`24`), el mismo que en `Estados/`.
+
+| Propiedad | Descripción |
+|-----------|-------------|
+| `COD_ESTADO` | Código de dos dígitos, igual que en `Estados/` |
+| `ESTADO` | Nombre del estado, igual que en `Estados/` |
+| `COD_MUNICIPIO` | Código de cuatro dígitos (`0101`, `0201`, …). Los dos primeros dígitos coinciden con `COD_ESTADO` |
+| `MUNICIPIO` | Nombre en mayúsculas |
+
+Son **335** municipios. Para el estado **`24`**:
+
+| Ubicación | `ESTADO` | `MUNICIPIO` (`2401`) |
+|-----------|----------|----------------------|
+| `Municipios/24.geojson` | **LA GUAIRA** | **VARGAS** (nombre del municipio en OCHA) |
+| `Municipios/MunicipiosAntiguos/24.geojson` | **VARGAS** | **VARGAS** |
+
+`fetch-municipios.mjs` escribe `Municipios/` y `Municipios/MunicipiosAntiguos/24.geojson`.
+
+### Ciudades (`ciudades.geojson`) {#ciudades}
 
 Polígonos de localidades.
 
@@ -106,7 +183,7 @@ Polígonos de localidades.
 | `superficie` | Superficie (unidad según fuente original) |
 | `perimetro` | Perímetro (unidad según fuente original) |
 
-### Carreteras (`carreterasDeVenezuela.geojson`)
+### Carreteras (`carreterasDeVenezuela.geojson`) {#carreteras}
 
 Segmentos de vía como `LineString`.
 
@@ -165,39 +242,41 @@ ogr2ogr -f GeoPackage venezuela.gpkg venezuela.geojson
 
 ### Filtrar un solo estado
 
-Usa el archivo correspondiente en `Estados/` (por ejemplo `Estados/13.geojson` para Lara) en lugar de filtrar el GeoJSON nacional.
+Usa el archivo correspondiente en `Estados/` (por ejemplo `Estados/13.geojson` para Lara) en lugar de filtrar el GeoJSON nacional. Los municipios de ese estado están en `Municipios/13.geojson`.
 
-## Fuente y atribución
+## Fuente y atribución {#fuente-y-atribucion}
 
-### Qué es (y qué no es) este repositorio
+### Qué es (y qué no es) este repositorio {#que-es-este-repo}
 
 | | Descripción |
 |---|---|
-| **VenGeoJSON** (este repo) | Copia u organización de capas **GeoJSON** publicadas por el MPV/Geocadena, con enlaces a la fuente original, para facilitar en **Git/GitHub** (u otro hosting) la descarga y el uso en mapas y apps. **No incluye** el código ni los servicios del SIG Geocadena. La carpeta `Estados/` divide el archivo nacional en un GeoJSON por entidad (`01`–`24`). |
-| **MPV / Geocadena / CENDITEL** | El [Observatorio Productivo Venezolano](http://mpv.cenditel.gob.ve/), el SIG **Geocadena**, el código del módulo Cadenas y los productos oficiales de [CENDITEL](https://www.cenditel.gob.ve/). **VenGeoJSON no es eso** y no hay afiliación, respaldo ni mantenimiento por parte de esas instituciones. |
+| **VenGeoJSON** (este repo) | Copia u organización de capas **GeoJSON** publicadas por el MPV/Geocadena, más municipios del COD-AB de OCHA, con enlaces a la fuente original, para facilitar en **Git/GitHub** (u otro hosting) la descarga y el uso en mapas y apps. **No incluye** el código ni los servicios del SIG Geocadena. `Estados/` y `Municipios/` dividen las capas por entidad (`01`–`24`). `MapasNacionalesAntiguos/`, `Estados/EstadosAntiguos/` y `Municipios/MunicipiosAntiguos/` guardan la denominación **Vargas** para el estado `24`. |
 
 En **VenGeoJSON**, los **datos** de los `.geojson` (geometrías y atributos) vienen de la fuente indicada abajo. Lo **propio de este repo** (README, carpeta `Estados/`, `scripts/`, `assets/`, etc.) es empaquetado y documentación de [**Ejeoxlac**](https://github.com/Ejeoxlac), mantenedor del repositorio, no del MPV.
 
-### Origen de las capas
+### Origen de las capas {#origen-capas}
 
 Las capas provienen del **Sistema de Información Geográfico (Geocadena)** del MPV, disponibles en el [índice de capas GeoJSON de Geocadena](https://mpv.cenditel.gob.ve/cadenas/browser/observatorio/procesos/apps/geocadena/media/geojson?rev=3f752f81c0f97fe4083947a5d432021bdf587bba&order=name). Para contexto del software institucional (no sustituye la fuente de datos): [wiki del módulo Cadenas](https://mpv.cenditel.gob.ve/cadenas/wiki).
 
 | Capa en este repo | En Geocadena (MPV) |
 |-------------------|-------------------|
-| `venezuela.geojson`, `Estados/*.geojson` | División político-territorial estadal — p. ej. [`venezuela.geojson`](https://mpv.cenditel.gob.ve/cadenas/browser/observatorio/procesos/apps/geocadena/media/geojson/venezuela.geojson) |
+| `venezuela.geojson`, `Estados/*.geojson` | División político-territorial estadal — p. ej. [`venezuela.geojson`](https://mpv.cenditel.gob.ve/cadenas/browser/observatorio/procesos/apps/geocadena/media/geojson/venezuela.geojson). En este repo, el `24` del archivo nacional usa **La Guaira**; Geocadena publica **Vargas** (copia en `MapasNacionalesAntiguos/venezuela.geojson`). |
 | `ciudades.geojson`, `carreterasDeVenezuela.geojson` | Misma [carpeta de medios GeoJSON](https://mpv.cenditel.gob.ve/cadenas/browser/observatorio/procesos/apps/geocadena/media/geojson?rev=3f752f81c0f97fe4083947a5d432021bdf587bba&order=name); confirma el nombre del archivo en el índice (puede diferir del de este repo). |
+| `Municipios/*.geojson` | **No** proviene de Geocadena. Límites municipales (admin 2) del COD-AB de Venezuela, [OCHA / HDX](https://data.humdata.org/dataset/cod-ab-ven), servicio `ven_admbnda_adm2_ine_20210223` (INE, válido desde febrero de 2021; revisión HDX de enero de 2025). Licencia [CC BY-IGO](https://creativecommons.org/licenses/by/3.0/igo/legalcode). Regenerar con `node scripts/fetch-municipios.mjs`. |
 
-**Atribución de los datos** (no de VenGeoJSON como proyecto CENDITEL): © Fundación CENDITEL — Observatorio Productivo Venezolano, módulo Geocadena.
+**Atribución de los datos** (no de VenGeoJSON como proyecto CENDITEL): estados, ciudades y carreteras © Fundación CENDITEL — Observatorio Productivo Venezolano, módulo Geocadena. Municipios © OCHA Venezuela / HDX, COD-AB (CC BY-IGO).
 
-### Licencia de los datos
+### Licencia de los datos {#licencia-datos}
 
-Este repositorio es un **empaquetado de conveniencia** por terceros; no sustituye los términos del titular de los datos ni implica que CENDITEL avala esta copia. CENDITEL ha descrito el SIG del observatorio como desarrollo en **software libre**; eso no implica por sí solo que todas las capas GeoJSON puedan redistribuirse bajo una licencia tipo MIT. Antes de republicar los archivos o usarlos en productos comerciales, revisa las condiciones publicadas en MPV/CENDITEL o consulta al titular. Los metadatos de los `.geojson` no incluyen licencia explícita.
+Este repositorio es un **empaquetado de conveniencia** por terceros; no sustituye los términos del titular de los datos ni implica que CENDITEL avala esta copia. CENDITEL ha descrito el SIG del observatorio como desarrollo en **software libre**; eso no implica por sí solo que todas las capas GeoJSON puedan redistribuirse bajo una licencia tipo MIT. Antes de republicar los archivos o usarlos en productos comerciales, revisa las condiciones publicadas en MPV/CENDITEL o consulta al titular. Los metadatos de los `.geojson` de estados, ciudades y carreteras no incluyen licencia explícita.
+
+Los archivos de `Municipios/` se publican bajo [CC BY-IGO](https://creativecommons.org/licenses/by/3.0/igo/legalcode): hay que atribuir a OCHA Venezuela / HDX. Esa licencia no cubre el resto de capas.
 
 ## Notas
 
 - Los límites administrativos y la red vial pueden no coincidir con la cartografía oficial más reciente; verifica antes de usarlos en producción o en informes legales.
 - Algunos nombres en `ciudades.geojson` pueden mostrar problemas de codificación de caracteres (UTF-8 mal interpretado en la fuente).
-- Si redistribuyes las capas, mantén la atribución de la sección [Fuente y atribución](#fuente-y-atribución) y los términos que correspondan al MPV/CENDITEL.
+- Si redistribuyes las capas, mantén la atribución de la sección [Fuente y atribución](#fuente-y-atribucion) y los términos que correspondan al MPV/CENDITEL.
 
 ## Estructura del proyecto
 
@@ -206,16 +285,26 @@ VenGeoJSON/
 ├── README.md
 ├── assets/
 │   ├── bandera-venezuela.svg
-│   └── mapa-venezuela-estados.svg
+│   ├── mapa-venezuela-estados.svg
+│   └── mapa-venezuela-municipios.svg
 ├── scripts/
-│   └── generate-map-svg.mjs
+│   ├── fetch-municipios.mjs
+│   ├── generate-map-svg.mjs
+│   ├── legacy-dir.mjs
+│   └── sync-estado-24.mjs
 ├── venezuela.geojson
+├── MapasNacionalesAntiguos/
+│   └── venezuela.geojson          ← estado 24 = Vargas
 ├── ciudades.geojson
 ├── carreterasDeVenezuela.geojson
-└── Estados/
-    ├── 01.geojson
-    ├── …
-    └── 24.geojson
+├── Estados/
+│   ├── 01.geojson … 24.geojson    ← 24 = La Guaira
+│   └── EstadosAntiguos/
+│       └── 24.geojson
+└── Municipios/
+    ├── 01.geojson … 24.geojson
+    └── MunicipiosAntiguos/
+        └── 24.geojson
 ```
 
 ## Contribuciones
