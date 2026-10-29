@@ -22,6 +22,7 @@
 - [Ejemplo en vista](#ejemplo-en-vista)
   - [Estados](#ejemplo-estados)
   - [Municipios](#ejemplo-municipios)
+  - [Parroquias](#ejemplo-parroquias)
 - [Contenido](#contenido)
   - [Tamaño aproximado](#tamano-aproximado)
 - [Sistema de coordenadas](#sistema-de-coordenadas)
@@ -30,6 +31,7 @@
   - [Códigos en `Estados/`](#codigos-estados)
   - [Estado `24` (La Guaira / Vargas)](#estado-24)
   - [Municipios](#municipios)
+  - [Parroquias](#parroquias)
   - [Ciudades](#ciudades)
   - [Carreteras](#carreteras)
 - [Uso rápido](#uso-rapido)
@@ -69,6 +71,16 @@ Vista previa de las capas [`Municipios/01.geojson`](Municipios/01.geojson) … [
 
 <p align="center"><sub>Polígonos generados a partir de <code>Municipios/*.geojson</code> · WGS 84 · regenerar con <code>node scripts/generate-map-svg.mjs</code></sub></p>
 
+### Parroquias {#ejemplo-parroquias}
+
+Vista previa de las capas en [`Parroquias/`](Parroquias/) (**1 134** parroquias en carpetas por municipio; no incluye la zona en reclamación ni `ParroquiasAntiguas/`):
+
+<p align="center">
+  <img src="assets/mapa-venezuela-parroquias.svg" alt="Mapa de Venezuela con división por parroquias" width="720"/>
+</p>
+
+<p align="center"><sub>Polígonos generados a partir de <code>Parroquias/*/*.geojson</code> · WGS 84 · regenerar con <code>node scripts/generate-map-svg.mjs</code></sub></p>
+
 ## Contenido
 
 | Archivo / carpeta | Descripción | Entidades |
@@ -77,6 +89,7 @@ Vista previa de las capas [`Municipios/01.geojson`](Municipios/01.geojson) … [
 | [`MapasNacionalesAntiguos/venezuela.geojson`](MapasNacionalesAntiguos/venezuela.geojson) | Misma capa nacional con el estado `24` como **Vargas** | 25 |
 | [`Estados/`](Estados/) | Un archivo por entidad federal (`01.geojson` … `24.geojson`) | 24 |
 | [`Municipios/`](Municipios/) | Municipios de cada entidad federal (`01.geojson` … `24.geojson`) | 335 |
+| [`Parroquias/`](Parroquias/) | Una carpeta por municipio (`2303_Cabimas/`, …) con un `.geojson` por parroquia (`230301.geojson`, …) | 1 134 |
 | [`ciudades.geojson`](ciudades.geojson) | Polígonos de localidades / áreas urbanas | 434 |
 | [`carreterasDeVenezuela.geojson`](carreterasDeVenezuela.geojson) | Red vial (segmentos `LineString`) | 17 975 |
 
@@ -87,6 +100,7 @@ Vista previa de las capas [`Municipios/01.geojson`](Municipios/01.geojson) … [
 | `venezuela.geojson` | ~6,3 MB |
 | `MapasNacionalesAntiguos/venezuela.geojson` | ~6,3 MB |
 | `Municipios/` | ~13,8 MB |
+| `Parroquias/` | ~17,7 MB |
 | `ciudades.geojson` | ~1,1 MB |
 | `carreterasDeVenezuela.geojson` | ~12,9 MB |
 
@@ -105,11 +119,11 @@ Cada feature representa una entidad federal.
 | Propiedad | Descripción |
 |-----------|-------------|
 | `COD_ESTADO` | Código de dos dígitos (`01`–`24`, más `00` en el archivo nacional) |
-| `ESTADO` | Nombre en mayúsculas |
+| `ESTADO` | Nombre en mayúsculas (como en Geocadena / OCHA) |
 
 Geometrías: `Polygon` o `MultiPolygon` (por ejemplo Carabobo, Nueva Esparta, Zulia).
 
-En `venezuela.geojson` aparece además la feature **`ZONA EN RECLAMACION`** (`COD_ESTADO`: `00`), correspondiente al área en disputa con Guyana (Esequibo). Esa entidad **no** tiene archivo propio en `Estados/` ni en `Municipios/`.
+En `venezuela.geojson` aparece además la feature **`ZONA EN RECLAMACION`** (`COD_ESTADO`: `00`), correspondiente al área en disputa con Guyana (Esequibo). Esa entidad **no** tiene archivo propio en `Estados/`, `Municipios/` ni `Parroquias/`.
 
 #### Códigos en `Estados/` {#codigos-estados}
 
@@ -170,6 +184,30 @@ Son **335** municipios. Para el estado **`24`**:
 | `Municipios/MunicipiosAntiguos/24.geojson` | **VARGAS** | **VARGAS** |
 
 `fetch-municipios.mjs` escribe `Municipios/` y `Municipios/MunicipiosAntiguos/24.geojson`.
+
+### Parroquias (`Parroquias/`) {#parroquias}
+
+Cada **municipio** tiene su carpeta bajo `Parroquias/`, con nombre **`{COD_MUNICIPIO}_{Municipio}`** en capitalización usual solo en el **nombre de carpeta** (p. ej. [`Parroquias/2303_Cabimas/`](Parroquias/2303_Cabimas/); dentro de los `.geojson`, `MUNICIPIO` y `PARROQUIA` siguen en mayúsculas). Cada parroquia es un archivo **`{COD_PARROQUIA}.geojson`** (`230301.geojson`, …).
+
+Cada archivo es un `FeatureCollection` con **un solo** feature (la parroquia).
+
+| Propiedad | Descripción |
+|-----------|-------------|
+| `COD_ESTADO` | Código de dos dígitos, igual que en `Estados/` |
+| `ESTADO` | Nombre del estado, igual que en `Estados/` |
+| `COD_MUNICIPIO` | Código de cuatro dígitos, igual que en `Municipios/` |
+| `MUNICIPIO` | Nombre del municipio (tomado de `Municipios/` en este repo) |
+| `COD_PARROQUIA` | Código de seis dígitos (`010101`, …). Coincide con el nombre del archivo sin extensión |
+| `PARROQUIA` | Nombre en mayúsculas |
+
+Son **1 134** parroquias en **335** carpetas de municipio (estados `01`–`24`; el COD-AB incluye una parroquia en `VE25` que aquí no se publica). Para el estado **`24`** (municipio `2401`):
+
+| Ubicación | `ESTADO` | `MUNICIPIO` |
+|-----------|----------|-------------|
+| `Parroquias/2401_Vargas/*.geojson` | **LA GUAIRA** | **VARGAS** |
+| `Parroquias/ParroquiasAntiguas/2401_Vargas/*.geojson` | **VARGAS** | **VARGAS** |
+
+`fetch-parroquias.mjs` descarga `ven_admin3.geojson` del [COD-AB en HDX](https://data.humdata.org/dataset/cod-ab-ven) y regenera toda la carpeta `Parroquias/`. Requiere `Municipios/` (`node scripts/fetch-municipios.mjs`).
 
 ### Ciudades (`ciudades.geojson`) {#ciudades}
 
@@ -242,7 +280,32 @@ ogr2ogr -f GeoPackage venezuela.gpkg venezuela.geojson
 
 ### Filtrar un solo estado
 
-Usa el archivo correspondiente en `Estados/` (por ejemplo `Estados/13.geojson` para Lara) en lugar de filtrar el GeoJSON nacional. Los municipios de ese estado están en `Municipios/13.geojson`.
+Usa el archivo correspondiente en `Estados/` (por ejemplo `Estados/13.geojson` para Lara) en lugar de filtrar el GeoJSON nacional. Los municipios de ese estado están en `Municipios/13.geojson`. Las parroquias están en carpetas bajo `Parroquias/` cuyo código de municipio empieza por `13` (p. ej. `Parroquias/1301_…/`).
+
+### Parroquias de un municipio (ej. Cabimas)
+
+Cabimas (`COD_MUNICIPIO` **2303**) → carpeta **`Parroquias/2303_Cabimas/`** con nueve archivos:
+
+```javascript
+// Una parroquia
+const ambrosio = await fetch("Parroquias/2303_Cabimas/230301.geojson").then((r) =>
+  r.json()
+);
+
+// Todas las parroquias del municipio (lista fija de códigos o convención en tu app)
+const codigos = ["230301", "230302", "230303", "230304", "230305", "230306", "230307", "230308", "230309"];
+const features = await Promise.all(
+  codigos.map((c) =>
+    fetch(`Parroquias/2303_Cabimas/${c}.geojson`).then((r) => r.json())
+  )
+);
+const cabimas = {
+  type: "FeatureCollection",
+  features: features.flatMap((fc) => fc.features),
+};
+```
+
+En **QGIS**: añade varias capas desde `Parroquias/2303_Cabimas/*.geojson`, o usa un script/`ogrmerge` si prefieres una sola capa.
 
 ## Fuente y atribución {#fuente-y-atribucion}
 
@@ -250,7 +313,7 @@ Usa el archivo correspondiente en `Estados/` (por ejemplo `Estados/13.geojson` p
 
 | | Descripción |
 |---|---|
-| **VenGeoJSON** (este repo) | Copia u organización de capas **GeoJSON** publicadas por el MPV/Geocadena, más municipios del COD-AB de OCHA, con enlaces a la fuente original, para facilitar en **Git/GitHub** (u otro hosting) la descarga y el uso en mapas y apps. **No incluye** el código ni los servicios del SIG Geocadena. `Estados/` y `Municipios/` dividen las capas por entidad (`01`–`24`). `MapasNacionalesAntiguos/`, `Estados/EstadosAntiguos/` y `Municipios/MunicipiosAntiguos/` guardan la denominación **Vargas** para el estado `24`. |
+| **VenGeoJSON** (este repo) | Copia u organización de capas **GeoJSON** publicadas por el MPV/Geocadena, más municipios y parroquias del COD-AB de OCHA, con enlaces a la fuente original, para facilitar en **Git/GitHub** (u otro hosting) la descarga y el uso en mapas y apps. **No incluye** el código ni los servicios del SIG Geocadena. `Estados/`, `Municipios/` y `Parroquias/` dividen las capas por entidad (`01`–`24`). `MapasNacionalesAntiguos/`, `Estados/EstadosAntiguos/`, `Municipios/MunicipiosAntiguos/` y `Parroquias/ParroquiasAntiguas/` guardan la denominación **Vargas** para el estado `24`. |
 
 En **VenGeoJSON**, los **datos** de los `.geojson` (geometrías y atributos) vienen de la fuente indicada abajo. Lo **propio de este repo** (README, carpeta `Estados/`, `scripts/`, `assets/`, etc.) es empaquetado y documentación de [**Ejeoxlac**](https://github.com/Ejeoxlac), mantenedor del repositorio, no del MPV.
 
@@ -263,14 +326,15 @@ Las capas provienen del **Sistema de Información Geográfico (Geocadena)** del 
 | `venezuela.geojson`, `Estados/*.geojson` | División político-territorial estadal — p. ej. [`venezuela.geojson`](https://mpv.cenditel.gob.ve/cadenas/browser/observatorio/procesos/apps/geocadena/media/geojson/venezuela.geojson). En este repo, el `24` del archivo nacional usa **La Guaira**; Geocadena publica **Vargas** (copia en `MapasNacionalesAntiguos/venezuela.geojson`). |
 | `ciudades.geojson`, `carreterasDeVenezuela.geojson` | Misma [carpeta de medios GeoJSON](https://mpv.cenditel.gob.ve/cadenas/browser/observatorio/procesos/apps/geocadena/media/geojson?rev=3f752f81c0f97fe4083947a5d432021bdf587bba&order=name); confirma el nombre del archivo en el índice (puede diferir del de este repo). |
 | `Municipios/*.geojson` | **No** proviene de Geocadena. Límites municipales (admin 2) del COD-AB de Venezuela, [OCHA / HDX](https://data.humdata.org/dataset/cod-ab-ven), servicio `ven_admbnda_adm2_ine_20210223` (INE, válido desde febrero de 2021; revisión HDX de enero de 2025). Licencia [CC BY-IGO](https://creativecommons.org/licenses/by/3.0/igo/legalcode). Regenerar con `node scripts/fetch-municipios.mjs`. |
+| `Parroquias/**/*.geojson` | **No** proviene de Geocadena. Límites de parroquias (admin 3) del mismo COD-AB, archivo `ven_admin3.geojson` en [ven_admin_boundaries.geojson.zip](https://data.humdata.org/dataset/cod-ab-ven) (INE, febrero de 2021). Misma licencia [CC BY-IGO](https://creativecommons.org/licenses/by/3.0/igo/legalcode). Regenerar con `node scripts/fetch-parroquias.mjs`. |
 
-**Atribución de los datos** (no de VenGeoJSON como proyecto CENDITEL): estados, ciudades y carreteras © Fundación CENDITEL — Observatorio Productivo Venezolano, módulo Geocadena. Municipios © OCHA Venezuela / HDX, COD-AB (CC BY-IGO).
+**Atribución de los datos** (no de VenGeoJSON como proyecto CENDITEL): estados, ciudades y carreteras © Fundación CENDITEL — Observatorio Productivo Venezolano, módulo Geocadena. Municipios y parroquias © OCHA Venezuela / HDX, COD-AB (CC BY-IGO).
 
 ### Licencia de los datos {#licencia-datos}
 
 Este repositorio es un **empaquetado de conveniencia** por terceros; no sustituye los términos del titular de los datos ni implica que CENDITEL avala esta copia. CENDITEL ha descrito el SIG del observatorio como desarrollo en **software libre**; eso no implica por sí solo que todas las capas GeoJSON puedan redistribuirse bajo una licencia tipo MIT. Antes de republicar los archivos o usarlos en productos comerciales, revisa las condiciones publicadas en MPV/CENDITEL o consulta al titular. Los metadatos de los `.geojson` de estados, ciudades y carreteras no incluyen licencia explícita.
 
-Los archivos de `Municipios/` se publican bajo [CC BY-IGO](https://creativecommons.org/licenses/by/3.0/igo/legalcode): hay que atribuir a OCHA Venezuela / HDX. Esa licencia no cubre el resto de capas.
+Los archivos de `Municipios/` y `Parroquias/` se publican bajo [CC BY-IGO](https://creativecommons.org/licenses/by/3.0/igo/legalcode): hay que atribuir a OCHA Venezuela / HDX. Esa licencia no cubre el resto de capas.
 
 ## Notas
 
@@ -286,9 +350,11 @@ VenGeoJSON/
 ├── assets/
 │   ├── bandera-venezuela.svg
 │   ├── mapa-venezuela-estados.svg
-│   └── mapa-venezuela-municipios.svg
+│   ├── mapa-venezuela-municipios.svg
+│   └── mapa-venezuela-parroquias.svg
 ├── scripts/
 │   ├── fetch-municipios.mjs
+│   ├── fetch-parroquias.mjs
 │   ├── generate-map-svg.mjs
 │   ├── legacy-dir.mjs
 │   └── sync-estado-24.mjs
@@ -301,10 +367,18 @@ VenGeoJSON/
 │   ├── 01.geojson … 24.geojson    ← 24 = La Guaira
 │   └── EstadosAntiguos/
 │       └── 24.geojson
-└── Municipios/
-    ├── 01.geojson … 24.geojson
-    └── MunicipiosAntiguos/
-        └── 24.geojson
+├── Municipios/
+│   ├── 01.geojson … 24.geojson
+│   └── MunicipiosAntiguos/
+│       └── 24.geojson
+└── Parroquias/
+    ├── 2303_Cabimas/
+    │   ├── 230301.geojson
+    │   └── …
+    ├── …                            ← una carpeta por municipio (335)
+    └── ParroquiasAntiguas/
+        └── 2401_Vargas/
+            └── 240101.geojson …
 ```
 
 ## Contribuciones

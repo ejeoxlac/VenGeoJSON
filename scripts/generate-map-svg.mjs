@@ -129,6 +129,26 @@ function loadMunicipioFeatures() {
   return features;
 }
 
+function loadParroquiaFeatures() {
+  const dir = path.join(root, "Parroquias");
+  if (!fs.existsSync(dir)) return [];
+  const features = [];
+  const walk = (current) => {
+    for (const ent of fs.readdirSync(current, { withFileTypes: true })) {
+      const full = path.join(current, ent.name);
+      if (ent.isDirectory()) {
+        if (ent.name === "ParroquiasAntiguas") continue;
+        walk(full);
+      } else if (ent.isFile() && ent.name.endsWith(".geojson")) {
+        const geo = JSON.parse(fs.readFileSync(full, "utf8"));
+        if (geo.features?.length) features.push(...geo.features);
+      }
+    }
+  };
+  walk(dir);
+  return features;
+}
+
 function generateMunicipios() {
   const features = loadMunicipioFeatures();
   if (!features.length) {
@@ -151,5 +171,34 @@ function generateMunicipios() {
   );
 }
 
+function parroquiaFill(cod) {
+  const n = parseInt(String(cod ?? "0"), 10) || 0;
+  const h = (n * 37) % 360;
+  return `hsl(${h}, 36%, 44%)`;
+}
+
+function generateParroquias() {
+  const features = loadParroquiaFeatures();
+  if (!features.length) {
+    console.warn("No parroquia features found; skip mapa-venezuela-parroquias.svg");
+    return;
+  }
+  writeSvg(
+    "mapa-venezuela-parroquias.svg",
+    "Mapa de Venezuela por parroquias",
+    features,
+    (f) => ({
+      fill: parroquiaFill(f.properties.COD_PARROQUIA),
+      stroke: "#142820",
+      strokeWidth: "0.12",
+      attrs: {
+        "data-parroquia": f.properties.PARROQUIA || "",
+        "data-cod": f.properties.COD_PARROQUIA || "",
+      },
+    })
+  );
+}
+
 generateEstados();
 generateMunicipios();
+generateParroquias();
