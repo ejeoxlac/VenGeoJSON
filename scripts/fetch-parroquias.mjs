@@ -40,7 +40,7 @@ function municipioByCode() {
     const code = String(i).padStart(2, "0");
     const file = path.join(root, "Municipios", `${code}.geojson`);
     if (!fs.existsSync(file)) {
-      throw new Error(`Falta ${file}; ejecuta primero node scripts/fetch-municipios.mjs`);
+      throw new Error(`Falta ${file}; ejecuta primero pnpm fetch:municipios`);
     }
     const geo = JSON.parse(fs.readFileSync(file, "utf8"));
     for (const f of geo.features) {
@@ -86,17 +86,34 @@ function writeParroquiaFile(filePath, feature) {
   );
 }
 
+const MUNICIPIO_DIR = /^\d{4}_/;
+
 function resetParroquiasOutput() {
-  if (!fs.existsSync(outDir)) {
-    fs.mkdirSync(outDir, { recursive: true });
-    return;
-  }
-  for (const ent of fs.readdirSync(outDir, { withFileTypes: true })) {
-    const full = path.join(outDir, ent.name);
-    if (ent.isDirectory()) {
-      fs.rmSync(full, { recursive: true, force: true });
-    } else if (ent.isFile() && ent.name.endsWith(".geojson")) {
+  fs.mkdirSync(outDir, { recursive: true });
+
+  const porMun = path.join(outDir, "ParroquiasPorMunicipio");
+  fs.mkdirSync(porMun, { recursive: true });
+  for (const ent of fs.readdirSync(porMun, { withFileTypes: true })) {
+    const full = path.join(porMun, ent.name);
+    if (ent.isFile() && ent.name.endsWith(".geojson")) {
       fs.unlinkSync(full);
+    } else if (ent.isDirectory() && MUNICIPIO_DIR.test(ent.name)) {
+      fs.rmSync(full, { recursive: true, force: true });
+    }
+  }
+
+  const antiguas = path.join(outDir, "ParroquiasAntiguas");
+  if (fs.existsSync(antiguas)) {
+    fs.rmSync(antiguas, { recursive: true, force: true });
+  }
+
+  for (const ent of fs.readdirSync(outDir, { withFileTypes: true })) {
+    if (!ent.isDirectory()) continue;
+    if (ent.name === "ParroquiasPorMunicipio" || ent.name === "ParroquiasAntiguas") {
+      continue;
+    }
+    if (MUNICIPIO_DIR.test(ent.name)) {
+      fs.rmSync(path.join(outDir, ent.name), { recursive: true, force: true });
     }
   }
 }
@@ -265,4 +282,12 @@ console.log(`Total: ${total} parroquias en ${munCodes.length} municipios`);
 const expected = collection.features.length - skipped;
 if (total !== expected) {
   throw new Error(`Se escribieron ${total} de ${expected} features esperadas`);
+}
+
+const build = spawnSync(process.execPath, ["scripts/build-parroquias-por-municipio.mjs"], {
+  cwd: root,
+  stdio: "inherit",
+});
+if (build.status !== 0) {
+  throw new Error("build-parroquias-por-municipio.mjs falló");
 }

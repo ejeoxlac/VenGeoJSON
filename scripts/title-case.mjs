@@ -13,7 +13,7 @@ const LOWER_WORDS = new Set([
 ]);
 
 /**
- * Capitalización para nombres de carpetas bajo Parroquias/ (p. ej. 2303_Cabimas).
+ * Capitalización para nombres de carpetas bajo Parroquias/ (p. ej. 2303_Cabimas), no bajo ParroquiasPorMunicipio/.
  * No usar en propiedades GeoJSON: ahí se conserva el texto como viene de la fuente (mayúsculas).
  */
 export function titleCaseEs(text) {

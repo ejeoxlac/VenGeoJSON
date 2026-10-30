@@ -1,0 +1,13 @@
+{
+  "name": "vengeojson",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch:municipios": "node scripts/fetch-municipios.mjs",
+    "fetch:parroquias": "node scripts/fetch-parroquias.mjs",
+    "build:parroquias": "node scripts/build-parroquias-por-municipio.mjs",
+    "sync:estado-24": "node scripts/sync-estado-24.mjs",
+    "maps:svg": "node scripts/generate-map-svg.mjs",
+    "fetch:admin": "node scripts/fetch-municipios.mjs && node scripts/fetch-parroquias.mjs"
+  }
+}

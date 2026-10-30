@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { parroquiasRoot } from "./legacy-dir.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
@@ -130,22 +131,23 @@ function loadMunicipioFeatures() {
 }
 
 function loadParroquiaFeatures() {
-  const dir = path.join(root, "Parroquias");
+  const dir = parroquiasRoot(root);
   if (!fs.existsSync(dir)) return [];
   const features = [];
-  const walk = (current) => {
-    for (const ent of fs.readdirSync(current, { withFileTypes: true })) {
-      const full = path.join(current, ent.name);
-      if (ent.isDirectory()) {
-        if (ent.name === "ParroquiasAntiguas") continue;
-        walk(full);
-      } else if (ent.isFile() && ent.name.endsWith(".geojson")) {
-        const geo = JSON.parse(fs.readFileSync(full, "utf8"));
-        if (geo.features?.length) features.push(...geo.features);
-      }
+  const MUNICIPIO_DIR = /^\d{4}_/;
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (!ent.isDirectory()) continue;
+    if (ent.name === "ParroquiasPorMunicipio" || ent.name === "ParroquiasAntiguas") {
+      continue;
     }
-  };
-  walk(dir);
+    if (!MUNICIPIO_DIR.test(ent.name)) continue;
+    const munDir = path.join(dir, ent.name);
+    for (const file of fs.readdirSync(munDir, { withFileTypes: true })) {
+      if (!file.isFile() || !file.name.endsWith(".geojson")) continue;
+      const geo = JSON.parse(fs.readFileSync(path.join(munDir, file.name), "utf8"));
+      if (geo.features?.length) features.push(...geo.features);
+    }
+  }
   return features;
 }
 

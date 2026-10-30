@@ -9,6 +9,7 @@ export const LEGACY_PATHS = {
   estado24: "Estados/EstadosAntiguos/24.geojson",
   municipio24: "Municipios/MunicipiosAntiguos/24.geojson",
   parroquias24: "Parroquias/ParroquiasAntiguas/2401_Vargas/",
+  parroquiasPorMunicipio: "Parroquias/ParroquiasPorMunicipio/",
 };
 
 /** Carpeta por municipio: p. ej. `2303_Cabimas` (solo el nombre de carpeta va en capitalización usual). */
@@ -23,8 +24,19 @@ export function parroquiasMunicipioDirName(codMunicipio, municipio) {
   return `${codMunicipio}_${slug}`;
 }
 
+export function parroquiasRoot(root) {
+  return path.join(root, "Parroquias");
+}
+
+export function parroquiasPorMunicipioRoot(root) {
+  return path.join(root, "Parroquias", "ParroquiasPorMunicipio");
+}
+
 export function parroquiasMunicipioDir(root, codMunicipio, municipio) {
-  return path.join(root, "Parroquias", parroquiasMunicipioDirName(codMunicipio, municipio));
+  return path.join(
+    parroquiasRoot(root),
+    parroquiasMunicipioDirName(codMunicipio, municipio)
+  );
 }
 
 export function legacyVenezuelaPath(root) {
@@ -42,8 +54,7 @@ export function legacyMunicipio24Path(root) {
 /** Parroquias del municipio 2401 con denominación estatal Vargas. */
 export function legacyParroquias24Dir(root) {
   return path.join(
-    root,
-    "Parroquias",
+    parroquiasRoot(root),
     "ParroquiasAntiguas",
     parroquiasMunicipioDirName("2401", ESTADO24_LEGACY.MUNICIPIO)
   );
